@@ -40,15 +40,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private TextureView textureView = null;
 
     private Button mStatButton = null;
+    private Button mSendButton = null;
 
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
@@ -226,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        Log.e(LOG_TAG, "onCreate");
 
         // Record to the external cache directory for visibility
         mFileName = getExternalCacheDir().getAbsolutePath();
@@ -267,6 +282,87 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
 
+        mSendButton = new Button(this);
+        mSendButton.setText("Send");
+        mSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(LOG_TAG, "Send : onClick");
+                Thread background = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+//                        try {
+//                            URL url = new URL("https://gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19");
+//                            HttpURLConnection client = (HttpURLConnection) url.openConnection();
+//                            client.setRequestMethod("POST");
+//                            client.setRequestProperty("user","apikey:wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9");
+//                            client.setDoOutput(true);
+//                            OutputStream outputPost = new BufferedOutputStream(client.getOutputStream());
+//
+//                            File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+//                            FileInputStream fileInputStream = new FileInputStream(file);
+//
+//                            writeStream(outputPost);
+//
+//                            outputPost.flush();
+//                            outputPost.close();
+//                        } catch (MalformedURLException e) {
+//                            e.printStackTrace();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+
+                        OkHttpClient client = new OkHttpClient();
+                        File image = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+                        assert(image.exists());
+                        RequestBody requestBody = new MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+//                                .addFormDataPart("user", "apikey:wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9")
+//                                .addFormDataPart("apikey", "wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9")
+                                .addFormDataPart("images_file", "pic.jpg",
+                                        RequestBody.create(MediaType.parse("image/jpeg"), image))
+                                .build();
+
+                        Request request = new Request.Builder()
+                                .url("https://gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19")
+                                .addHeader("Authorization", "Basic YXBpa2V5Ondnd2dfRGdPZUFVTHFmLUlhY0FOLTZGNE5jdFk3QWFHblVqY09oWmMtVXo5")
+                                .post(requestBody)
+                                .build();
+
+
+                        Response response = null;
+                        try {
+                            Call call = client.newCall(request);
+                            response =   call.execute();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if (response == null) {
+                            Log.e(LOG_TAG, "Unable to upload to server. (null)");
+                        } else if(!response.isSuccessful()) {
+                            Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
+                        } else {
+                            Log.e(LOG_TAG, "Upload was successful.");
+                        }
+
+                        try {
+                            Log.e(LOG_TAG, response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                background.start();
+            }
+        });
+        ll.addView(mSendButton,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0));
 
         textureView = new TextureView(this);
         textureView.setSurfaceTextureListener(textureListener);
@@ -380,12 +476,12 @@ public class MainActivity extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 640;
-            int height = 480;
-            if (jpegSizes != null && 0 < jpegSizes.length) {
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
-            }
+            int width = 640; // 640
+            int height = 480; // 480
+//            if (jpegSizes != null && 0 < jpegSizes.length) {
+//                width = jpegSizes[0].getWidth();
+//                height = jpegSizes[0].getHeight();
+//            }
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurfaces = new ArrayList<Surface>(2);
             outputSurfaces.add(reader.getSurface());
