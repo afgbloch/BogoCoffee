@@ -38,6 +38,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -318,11 +321,13 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         try {
-                            Log.e(LOG_TAG, response.body().string());
+                            JSONObject reader = new JSONObject(response.body().string());
+                            Log.e(LOG_TAG, reader.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
                 background.start();
