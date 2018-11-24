@@ -35,7 +35,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mTakePictureButton = null;
     private TextureView textureView = null;
 
+    private Button mStatButton = null;
     private Button mSendButton = null;
 
     private Handler mBackgroundHandler;
@@ -217,6 +220,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class StatButton extends AppCompatButton {
+        OnClickListener clicker = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView t = new TextView(ctx);
+                t.setText("AZE");
+                PopupWindow p = new PopupWindow(t);
+            }
+        };
+
+        Context ctx;
+
+        public StatButton(Context ctx) {
+            super(ctx);
+            this.ctx = ctx;
+            setText("Stats");
+            setOnClickListener(clicker);
+        }
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -230,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
         RelativeLayout ml = new RelativeLayout(this);
         LinearLayout ll = new LinearLayout(this);
+        LinearLayout footer = new LinearLayout(this);
         mRecordButton = new RecordButton(this);
         ll.addView(mRecordButton,
                 new LinearLayout.LayoutParams(
@@ -249,12 +273,18 @@ public class MainActivity extends AppCompatActivity {
                 takePicture();
             }
         });
+
+
+        mStatButton = new StatButton(this);
+        ll.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
+
         mTakePictureButton.setText("Take Picture");
         ll.addView(mTakePictureButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
         mSendButton = new Button(this);
         mSendButton.setText("Send");
         mSendButton.setOnClickListener(new View.OnClickListener() {
@@ -338,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
         textureView = new TextureView(this);
         textureView.setSurfaceTextureListener(textureListener);
         ml.addView(textureView,
@@ -346,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
         ml.addView(ll);
+
         setContentView(ml);
     }
 
