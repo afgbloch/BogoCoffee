@@ -252,20 +252,24 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
         RelativeLayout ml = new RelativeLayout(this);
-        LinearLayout ll = new LinearLayout(this);
+        LinearLayout ll1 = new LinearLayout(this);
+        LinearLayout ll2 = new LinearLayout(this);
         LinearLayout footer = new LinearLayout(this);
+
         mRecordButton = new RecordButton(this);
-        ll.addView(mRecordButton,
+        ll1.addView(mRecordButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
         mPlayButton = new PlayButton(this);
-        ll.addView(mPlayButton,
+        ll1.addView(mPlayButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
         mTakePictureButton = new Button(this);
         mTakePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,12 +278,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         mStatButton = new StatButton(this);
-        ll.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
+        ll1.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
 
         mTakePictureButton.setText("Take Picture");
-        ll.addView(mTakePictureButton,
+        ll2.addView(mTakePictureButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -341,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 background.start();
             }
         });
-        ll.addView(mSendButton,
+        ll2.addView(mSendButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -354,7 +357,8 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
-        ml.addView(ll);
+        ml.addView(ll1);
+        ml.addView(ll2);
 
         setContentView(ml);
     }
