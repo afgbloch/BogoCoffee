@@ -303,8 +303,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         textureView.setSurfaceTextureListener(textureListener);
-        mSharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        editor = mSharedPref.edit();
     }
 
     @Override
@@ -582,8 +580,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        mSharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        editor = mSharedPref.edit();
         editor.putInt(classe, mSharedPref.getInt(classe,0) + 1);
-        editor.commit();
+        editor.apply();
+
     }
 }
 
