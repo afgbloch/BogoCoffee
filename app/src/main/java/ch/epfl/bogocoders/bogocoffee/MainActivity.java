@@ -26,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -196,6 +197,10 @@ public class MainActivity extends AppCompatActivity {
             setText("Start recording");
             setOnClickListener(clicker);
         }
+
+        public RecordButton(Context ctx, AttributeSet attr) {
+            super(ctx, attr);
+        }
     }
 
     class PlayButton extends AppCompatButton {
@@ -243,6 +248,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        setContentView(R.layout.activity_main);
+
         Log.e(LOG_TAG, "onCreate");
 
         // Record to the external cache directory for visibility
@@ -251,26 +259,13 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
-        RelativeLayout ml = new RelativeLayout(this);
-        LinearLayout ll1 = new LinearLayout(this);
-        LinearLayout ll2 = new LinearLayout(this);
-        LinearLayout footer = new LinearLayout(this);
+        mRecordButton      = (RecordButton) findViewById(R.id.record);
+        mPlayButton        = (PlayButton  ) findViewById(R.id.play);
+        mTakePictureButton = (Button      ) findViewById(R.id.capture);
+        mSendButton        = (Button      ) findViewById(R.id.send);
+        mStatButton        = (StatButton  ) findViewById(R.id.stats);
+        textureView        = (TextureView ) findViewById(R.id.preview);
 
-        mRecordButton = new RecordButton(this);
-        ll1.addView(mRecordButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-
-        mPlayButton = new PlayButton(this);
-        ll1.addView(mPlayButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-
-        mTakePictureButton = new Button(this);
         mTakePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,18 +273,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mStatButton = new StatButton(this);
-        ll1.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
-
-        mTakePictureButton.setText("Take Picture");
-        ll2.addView(mTakePictureButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-
-        mSendButton = new Button(this);
-        mSendButton.setText("Send");
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -344,23 +327,10 @@ public class MainActivity extends AppCompatActivity {
                 background.start();
             }
         });
-        ll2.addView(mSendButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
 
-        textureView = new TextureView(this);
         textureView.setSurfaceTextureListener(textureListener);
-        ml.addView(textureView,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-        ml.addView(ll1);
-        ml.addView(ll2);
 
-        setContentView(ml);
+//        setContentView(findViewById(R.id.main_layout));
     }
 
     @Override
