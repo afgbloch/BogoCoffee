@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private Button   mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
-    private Button mTakePictureButton = null;
     private TextureView textureView = null;
 
     private Button mStatButton = null;
@@ -195,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
 
         mRecordButton      = (Button     ) findViewById(R.id.record);
         mPlayButton        = (Button     ) findViewById(R.id.play);
-        mTakePictureButton = (Button     ) findViewById(R.id.capture);
         mSendButton        = (Button     ) findViewById(R.id.send);
         mStatButton        = (Button     ) findViewById(R.id.stats);
         textureView        = (TextureView) findViewById(R.id.preview);
@@ -238,14 +236,6 @@ public class MainActivity extends AppCompatActivity {
                     mRecordButton.setText("Start recording");
                 }
                 mStartRecording = !mStartRecording;
-            }
-        });
-
-        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
