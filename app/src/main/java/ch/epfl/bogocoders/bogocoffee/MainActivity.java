@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_ALL = 1;
     private static String mFileName = null;
 
+    private static String photo_filename = null;
+
     private Button mRecordButton = null;
     private MediaRecorder mRecorder = null;
 
@@ -192,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
         // Record to the external cache directory for visibility
         mFileName = getExternalCacheDir().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String currentDateandTime = sdf.format(new Date());
+        photo_filename = "pic-" + currentDateandTime;
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
@@ -582,7 +587,7 @@ public class MainActivity extends AppCompatActivity {
             String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("name");
             if (s.equals("CoffeeTypesSmall"))
                 classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
-            else classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(1).getString("class");
+            else classe = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
             Log.e(LOG_TAG, "Classe : " + classe);
 
