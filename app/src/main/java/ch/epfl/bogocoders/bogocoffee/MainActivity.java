@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(MainActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
             createCameraPreview();
         }
     };
@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(MainActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
@@ -510,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    Toast.makeText(MainActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
                 }
             }, null);
         } catch (CameraAccessException e) {
