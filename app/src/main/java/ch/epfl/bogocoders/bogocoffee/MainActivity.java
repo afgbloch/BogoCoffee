@@ -280,21 +280,22 @@ public class MainActivity extends AppCompatActivity {
 
                         if (response == null) {
                             Log.e(LOG_TAG, "Unable to upload to server. (null)");
+                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else if(!response.isSuccessful()) {
                             Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
+                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e(LOG_TAG, "Upload was successful.");
-                        }
+                            try {
+                                JSONObject reader = new JSONObject(response.body().string());
+                                Log.e(LOG_TAG, reader.toString());
 
-                        try {
-                            JSONObject reader = new JSONObject(response.body().string());
-                            Log.e(LOG_TAG, reader.toString());
-
-                            JSON_to_CoffeeType(reader);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                                JSON_to_CoffeeType(reader);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -521,6 +522,10 @@ public class MainActivity extends AppCompatActivity {
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
+                return;
+            }
             manager.openCamera(cameraId, stateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
