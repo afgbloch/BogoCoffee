@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -254,42 +255,27 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout ml = new RelativeLayout(this);
         LinearLayout ll = new LinearLayout(this);
         LinearLayout footer = new LinearLayout(this);
+        /*
         mRecordButton = new RecordButton(this);
+
         ll.addView(mRecordButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
         mPlayButton = new PlayButton(this);
         ll.addView(mPlayButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
+                        0)); */
         mTakePictureButton = new Button(this);
         mTakePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePicture();
-            }
-        });
 
-
-        mStatButton = new StatButton(this);
-        ll.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
-
-        mTakePictureButton.setText("Take Picture");
-        ll.addView(mTakePictureButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-
-        mSendButton = new Button(this);
-        mSendButton.setText("Send");
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 Log.e(LOG_TAG, "Send : onClick");
                 Thread background = new Thread(new Runnable() {
 
@@ -303,6 +289,8 @@ public class MainActivity extends AppCompatActivity {
                                 .setType(MultipartBody.FORM)
                                 .addFormDataPart("images_file", "pic.jpg",
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
+                                .addFormDataPart("owners", "me")
+                                .addFormDataPart("threshold", "0.5")
                                 .build();
 
                         Request request = new Request.Builder()
@@ -331,6 +319,8 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject reader = new JSONObject(response.body().string());
                             Log.e(LOG_TAG, reader.toString());
+
+                            JSON_to_CoffeeType(reader);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -341,12 +331,32 @@ public class MainActivity extends AppCompatActivity {
                 background.start();
             }
         });
-        ll.addView(mSendButton,
+
+
+        mStatButton = new StatButton(this);
+        ll.addView(mStatButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
+
+        mTakePictureButton.setText("Take Picture");
+        ll.addView(mTakePictureButton,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
 
+        /*
+        mSendButton = new Button(this);
+        mSendButton.setText("Send");
+        mSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        ll.addView(mSendButton,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0));
+*/
         textureView = new TextureView(this);
         textureView.setSurfaceTextureListener(textureListener);
         ml.addView(textureView,
@@ -612,4 +622,27 @@ public class MainActivity extends AppCompatActivity {
         stopBackgroundThread();
         super.onPause();
     }
+
+    private enum CoffeeType {
+            Expresso_Forte,
+            Expresso_Decaffeinato,
+            Lungo_Forte,
+            Ristretto,
+            Lungo_Decaffeinato,
+            Ristretto_Intenso,
+    }
+
+    private CoffeeType JSON_to_CoffeeType(JSONObject o) {
+        try {
+            JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
+            String classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
+            System.err.println(classe);
+
+        } catch (JSONException e) {
+            System.err.println(e);
+        }
+
+        return null;
+    }
 }
+
