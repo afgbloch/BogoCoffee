@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         mFileName += "/audiorecordtest.3gp";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String currentDateandTime = sdf.format(new Date());
-        photo_filename = "pic-" + currentDateandTime;
+        photo_filename = "pic-" + currentDateandTime + ".jpg";
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
@@ -258,11 +258,11 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         OkHttpClient client = new OkHttpClient();
-                        File image = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+                        File image = new File(Environment.getExternalStorageDirectory()+"/"+photo_filename);
                         assert(image.exists());
                         RequestBody requestBody = new MultipartBody.Builder()
                                 .setType(MultipartBody.FORM)
-                                .addFormDataPart("images_file", "pic.jpg",
+                                .addFormDataPart("images_file", photo_filename,
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
                                 .addFormDataPart("owners", "me")
                                 .addFormDataPart("threshold", "0.7")
@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+            final File file = new File(Environment.getExternalStorageDirectory()+"/"+photo_filename);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
