@@ -295,34 +295,12 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void run() {
-//                        try {
-//                            URL url = new URL("https://gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19");
-//                            HttpURLConnection client = (HttpURLConnection) url.openConnection();
-//                            client.setRequestMethod("POST");
-//                            client.setRequestProperty("user","apikey:wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9");
-//                            client.setDoOutput(true);
-//                            OutputStream outputPost = new BufferedOutputStream(client.getOutputStream());
-//
-//                            File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
-//                            FileInputStream fileInputStream = new FileInputStream(file);
-//
-//                            writeStream(outputPost);
-//
-//                            outputPost.flush();
-//                            outputPost.close();
-//                        } catch (MalformedURLException e) {
-//                            e.printStackTrace();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
 
                         OkHttpClient client = new OkHttpClient();
                         File image = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
                         assert(image.exists());
                         RequestBody requestBody = new MultipartBody.Builder()
                                 .setType(MultipartBody.FORM)
-//                                .addFormDataPart("user", "apikey:wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9")
-//                                .addFormDataPart("apikey", "wgwg_DgOeAULqf-IacAN-6F4NctY7AaGnUjcOhZc-Uz9")
                                 .addFormDataPart("images_file", "pic.jpg",
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
                                 .build();
