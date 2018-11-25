@@ -3,6 +3,7 @@ package ch.epfl.bogocoders.bogocoffee;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -81,11 +82,12 @@ public class MainActivity extends AppCompatActivity {
     private Button   mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
-    private Button mTakePictureButton = null;
     private TextureView textureView = null;
 
     private Button mStatButton = null;
     private Button mSendButton = null;
+    private SharedPreferences mSharedPref = null;
+    private SharedPreferences.Editor editor = null;
 
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
@@ -195,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
 
         mRecordButton      = (Button     ) findViewById(R.id.record);
         mPlayButton        = (Button     ) findViewById(R.id.play);
-        mTakePictureButton = (Button     ) findViewById(R.id.capture);
         mSendButton        = (Button     ) findViewById(R.id.send);
         mStatButton        = (Button     ) findViewById(R.id.stats);
         textureView        = (TextureView) findViewById(R.id.preview);
@@ -238,14 +239,6 @@ public class MainActivity extends AppCompatActivity {
                     mRecordButton.setText("Start recording");
                 }
                 mStartRecording = !mStartRecording;
-            }
-        });
-
-        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
@@ -310,7 +303,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         textureView.setSurfaceTextureListener(textureListener);
-
+        mSharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        editor = mSharedPref.edit();
     }
 
     @Override
@@ -568,27 +562,29 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private enum CoffeeType {
-            Expresso_Forte,
-            Expresso_Decaffeinato,
-            Lungo_Forte,
-            Ristretto,
-            Lungo_Decaffeinato,
-            Ristretto_Intenso,
-    }
+    public static String COFFEE_TYPE[] = {
+            "ExpressoForte",
+            "ExpressoDecaffeinato",
+            "LungoForte",
+            "Ristretto",
+            "LungoDecaffeinato",
+            "RistrettoIntenso",
+            "Unknown"
+    };
 
-    private CoffeeType JSON_to_CoffeeType(JSONObject o) {
+    private void JSON_to_CoffeeType(JSONObject o) {
+        String classe = "Unknown";
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
             String classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
-            System.err.println(classe);
+            Log.e(LOG_TAG, "Classe : " + classe);
 
         } catch (JSONException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
-
-        return null;
+        editor.putInt(classe, mSharedPref.getInt(classe,0) + 1);
+        editor.commit();
     }
 }
 

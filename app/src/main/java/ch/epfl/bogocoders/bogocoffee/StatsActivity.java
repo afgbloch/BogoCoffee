@@ -2,6 +2,8 @@ package ch.epfl.bogocoders.bogocoffee;
 
 import android.app.ListActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -23,6 +25,11 @@ public class StatsActivity extends ListActivity {
     // This is the Adapter being used to display the list's data
     SimpleCursorAdapter mAdapter;
 
+    private static String[] items = {
+            "ExpressoForte"       , "Ristretto"        , "LungpForte",
+            "ExpressoDecaffeinato", "LungoDecaffeinato", "Ristretto"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,13 +38,11 @@ public class StatsActivity extends ListActivity {
 
         // Create a list data which will be displayed in inner ListView.
         List<String> listData = new ArrayList<String>();
-        listData.add("Audi");
-        listData.add("Benz");
-        listData.add("BMW");
-        listData.add("Ford");
-        listData.add("Honda");
-        listData.add("Toyoto");
-        
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        for (String item : MainActivity.COFFEE_TYPE) {
+            listData.add(item + " : " + sharedPref.getInt(item, 0));
+        }
+
 
         ArrayAdapter<String> listDataAdapter = new ArrayAdapter<String>(this, R.layout.activity_stats_row, R.id.listRowTextView, listData);
 
