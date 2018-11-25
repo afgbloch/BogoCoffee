@@ -2,6 +2,7 @@ package ch.epfl.bogocoders.bogocoffee;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -216,7 +217,10 @@ public class MainActivity extends AppCompatActivity {
         mStatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.e(LOG_TAG, "Stats Button");
+                Intent myIntent = new Intent(MainActivity.this, StatsActivity.class);
+//                myIntent.putExtra("key", value); //Optional parameters
+                MainActivity.this.startActivity(myIntent);
             }
         });
 
@@ -228,18 +232,11 @@ public class MainActivity extends AppCompatActivity {
 
                 onRecord(mStartRecording);
                 if (mStartRecording) {
-                    mTakePictureButton.setText("Stop recording");
+                    mRecordButton.setText("Stop recording");
                 } else {
-                    mTakePictureButton.setText("Start recording");
+                    mRecordButton.setText("Start recording");
                 }
                 mStartRecording = !mStartRecording;
-            }
-        });
-
-        mStatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
@@ -247,9 +244,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
+                takePicture();
             }
         });
+
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -307,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
 
         textureView.setSurfaceTextureListener(textureListener);
 
-//        setContentView(findViewById(R.id.main_layout));
     }
 
     @Override
@@ -338,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             return false;
         }
+
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
