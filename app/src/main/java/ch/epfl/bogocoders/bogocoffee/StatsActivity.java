@@ -39,9 +39,9 @@ public class StatsActivity extends ListActivity {
         // Create a list data which will be displayed in inner ListView.
         List<String> listData = new ArrayList<String>();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-//        for (String item : items) {
-//
-//        }
+        for (String item : MainActivity.COFFEE_TYPE) {
+            listData.add(item + " : " + sharedPref.getInt(item, 0));
+        }
 
 
         ArrayAdapter<String> listDataAdapter = new ArrayAdapter<String>(this, R.layout.activity_stats_row, R.id.listRowTextView, listData);

@@ -6,7 +6,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="dev2qa.com --- ListActivity Example"
         android:textSize="25dp"
         android:textColor="@android:color/white"/>
     <ListView
