@@ -407,8 +407,8 @@ public class MainActivity extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 640; // 640
-            int height = 480; // 480
+            int width = 176; // 640
+            int height = 144; // 480
 //            if (jpegSizes != null && 0 < jpegSizes.length) {
 //                width = jpegSizes[0].getWidth();
 //                height = jpegSizes[0].getHeight();
@@ -579,8 +579,8 @@ public class MainActivity extends AppCompatActivity {
         String classe = "Unknown";
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
-            String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("classifier_id");
-            if (s.equals("Coffee2Types"))
+            String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("name");
+            if (s.equals("Coffee2TypesSmall"))
                 classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
             else classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(1).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
