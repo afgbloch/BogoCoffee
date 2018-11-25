@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                                 .addFormDataPart("images_file", "pic.jpg",
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
                                 .addFormDataPart("owners", "me")
-                                .addFormDataPart("threshold", "0.0")
+                                .addFormDataPart("threshold", "0.7")
                                 .build();
 
                         Request request = new Request.Builder()
@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
             String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("name");
-            if (s.equals("Coffee2TypesSmall"))
+            if (s.equals("CoffeeTypesSmall"))
                 classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
             else classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(1).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
