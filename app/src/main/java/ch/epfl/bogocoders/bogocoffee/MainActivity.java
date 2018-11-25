@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                                 .addFormDataPart("images_file", "pic.jpg",
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
                                 .addFormDataPart("owners", "me")
-                                .addFormDataPart("threshold", "0.5")
+                                .addFormDataPart("threshold", "0.0")
                                 .build();
 
                         Request request = new Request.Builder()
@@ -414,8 +414,8 @@ public class MainActivity extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 640; // 640
-            int height = 480; // 480
+            int width = 32; // 640
+            int height = 24; // 480
 //            if (jpegSizes != null && 0 < jpegSizes.length) {
 //                width = jpegSizes[0].getWidth();
 //                height = jpegSizes[0].getHeight();
@@ -581,6 +581,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
             String classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
+           // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
             System.err.println(classe);
 
         } catch (JSONException e) {
