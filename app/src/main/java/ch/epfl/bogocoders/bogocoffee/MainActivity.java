@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_ALL = 1;
     private static String mFileName = null;
 
-    private RecordButton mRecordButton = null;
+    private Button mRecordButton = null;
     private MediaRecorder mRecorder = null;
 
-    private PlayButton   mPlayButton = null;
+    private Button   mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
     private Button mTakePictureButton = null;
@@ -177,74 +177,6 @@ public class MainActivity extends AppCompatActivity {
         mRecorder = null;
     }
 
-    class RecordButton extends AppCompatButton {
-        boolean mStartRecording = true;
-
-        OnClickListener clicker = new OnClickListener() {
-            public void onClick(View v) {
-                onRecord(mStartRecording);
-                if (mStartRecording) {
-                    setText("Stop recording");
-                } else {
-                    setText("Start recording");
-                }
-                mStartRecording = !mStartRecording;
-            }
-        };
-
-        public RecordButton(Context ctx) {
-            super(ctx);
-            setText("Start recording");
-            setOnClickListener(clicker);
-        }
-
-        public RecordButton(Context ctx, AttributeSet attr) {
-            super(ctx, attr);
-        }
-    }
-
-    class PlayButton extends AppCompatButton {
-        boolean mStartPlaying = true;
-
-        OnClickListener clicker = new OnClickListener() {
-            public void onClick(View v) {
-                onPlay(mStartPlaying);
-                if (mStartPlaying) {
-                    setText("Stop playing");
-                } else {
-                    setText("Start playing");
-                }
-                mStartPlaying = !mStartPlaying;
-            }
-        };
-
-        public PlayButton(Context ctx) {
-            super(ctx);
-            setText("Start playing");
-            setOnClickListener(clicker);
-        }
-    }
-
-    class StatButton extends AppCompatButton {
-        OnClickListener clicker = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView t = new TextView(ctx);
-                t.setText("AZE");
-                PopupWindow p = new PopupWindow(t);
-            }
-        };
-
-        Context ctx;
-
-        public StatButton(Context ctx) {
-            super(ctx);
-            this.ctx = ctx;
-            setText("Stats");
-            setOnClickListener(clicker);
-        }
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -259,20 +191,65 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
-        mRecordButton      = (RecordButton) findViewById(R.id.record);
-        mPlayButton        = (PlayButton  ) findViewById(R.id.play);
-        mTakePictureButton = (Button      ) findViewById(R.id.capture);
-        mSendButton        = (Button      ) findViewById(R.id.send);
-        mStatButton        = (StatButton  ) findViewById(R.id.stats);
-        textureView        = (TextureView ) findViewById(R.id.preview);
+        mRecordButton      = (Button     ) findViewById(R.id.record);
+        mPlayButton        = (Button     ) findViewById(R.id.play);
+        mTakePictureButton = (Button     ) findViewById(R.id.capture);
+        mSendButton        = (Button     ) findViewById(R.id.send);
+        mStatButton        = (Button     ) findViewById(R.id.stats);
+        textureView        = (TextureView) findViewById(R.id.preview);
 
-        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
+            boolean mStartPlaying = true;
+
             @Override
             public void onClick(View v) {
-                takePicture();
+                onPlay(mStartPlaying);
+                if (mStartPlaying) {
+                    mPlayButton.setText("Stop playing");
+                } else {
+                    mPlayButton.setText("Start playing");
+                }
+                mStartPlaying = !mStartPlaying;
             }
         });
 
+        mStatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        mRecordButton.setOnClickListener(new View.OnClickListener() {
+            boolean mStartRecording = true;
+
+            @Override
+            public void onClick(View v) {
+
+                onRecord(mStartRecording);
+                if (mStartRecording) {
+                    mTakePictureButton.setText("Stop recording");
+                } else {
+                    mTakePictureButton.setText("Start recording");
+                }
+                mStartRecording = !mStartRecording;
+            }
+        });
+
+        mStatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
