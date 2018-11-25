@@ -576,9 +576,7 @@ public class MainActivity extends AppCompatActivity {
         String classe = "Unknown";
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
-            String classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
-            if (classe == null)
-                classe = "Unknown";
+            classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
             Log.e(LOG_TAG, "Classe : " + classe);
 
