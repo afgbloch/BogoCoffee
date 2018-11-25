@@ -286,14 +286,14 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        Looper.prepare();
+//                        Looper.prepare();
 
                         if (response == null) {
                             Log.e(LOG_TAG, "Unable to upload to server. (null)");
-                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else if(!response.isSuccessful()) {
                             Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
-                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e(LOG_TAG, "Upload was successful.");
                             try {
