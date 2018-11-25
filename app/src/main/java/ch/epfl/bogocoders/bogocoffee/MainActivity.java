@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                                 .addFormDataPart("images_file", "pic.jpg",
                                         RequestBody.create(MediaType.parse("image/jpeg"), image))
                                 .addFormDataPart("owners", "me")
-                                .addFormDataPart("threshold", "0.0")
+                                .addFormDataPart("threshold", "0.7")
                                 .build();
 
                         Request request = new Request.Builder()
@@ -407,8 +407,8 @@ public class MainActivity extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 32; // 640
-            int height = 24; // 480
+            int width = 176; // 640
+            int height = 144; // 480
 //            if (jpegSizes != null && 0 < jpegSizes.length) {
 //                width = jpegSizes[0].getWidth();
 //                height = jpegSizes[0].getHeight();
@@ -579,7 +579,10 @@ public class MainActivity extends AppCompatActivity {
         String classe = "Unknown";
         try {
             JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
-            classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
+            String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("name");
+            if (s.equals("CoffeeTypesSmall"))
+                classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
+            else classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(1).getString("class");
            // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
             Log.e(LOG_TAG, "Classe : " + classe);
 
