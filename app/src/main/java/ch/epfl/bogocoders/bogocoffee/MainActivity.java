@@ -197,9 +197,6 @@ public class MainActivity extends AppCompatActivity {
         // Record to the external cache directory for visibility
         mFileName = getExternalCacheDir().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String currentDateandTime = sdf.format(new Date());
-        photo_filename = "pic-" + currentDateandTime;
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
@@ -261,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         OkHttpClient client = new OkHttpClient();
+
                         File image = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
                         assert(image.exists());
                         RequestBody requestBody = new MultipartBody.Builder()
@@ -272,8 +270,9 @@ public class MainActivity extends AppCompatActivity {
                                 .build();
 
                         Request request = new Request.Builder()
-                                .url("https://gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19")
-                                .addHeader("Authorization", "Basic YXBpa2V5Ondnd2dfRGdPZUFVTHFmLUlhY0FOLTZGNE5jdFk3QWFHblVqY09oWmMtVXo5")
+                                .url("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/5ab5e3e9-ded8-4e1f-bbec-c4b77517a849/image")
+                                .addHeader("Prediction-Key", "40dfbb9286d243b9b7af566c05631264")
+                                .addHeader("Content-Type", "application/octet-stream")
                                 .post(requestBody)
                                 .build();
 
