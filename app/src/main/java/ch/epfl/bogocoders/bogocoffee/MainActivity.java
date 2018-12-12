@@ -566,12 +566,10 @@ public class MainActivity extends AppCompatActivity {
     private void JSON_to_CoffeeType(JSONObject o) {
         String classe = "Unknown";
         try {
-            JSONObject array_images = o.getJSONArray("images").getJSONObject(0);
-            String s = array_images.getJSONArray("classifiers").getJSONObject(0).getString("name");
-            if (s.equals("CoffeeTypesSmall"))
-                classe = array_images.getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0).getString("class");
-            else classe = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
-           // String grands = array_images.getJSONArray("classifiers").getJSONObject(1).getJSONArray("classes").getJSONObject(0).getString("class");
+            JSONObject prediction = o.getJSONArray("predictions").getJSONObject(0);
+            if (prediction.getDouble("probability") > 0.50) {
+                classe = prediction.getString("tagName");
+            }
             Log.e(LOG_TAG, "Classe : " + classe);
 
         } catch (JSONException e) {
