@@ -232,63 +232,8 @@ public class MainActivity extends AppCompatActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
                 Log.e(LOG_TAG, "Send : onClick");
-                Thread background = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        OkHttpClient client = new OkHttpClient();
-
-                        File image = new File(fileName);
-                        Log.e(LOG_TAG, "size"+image.getTotalSpace());
-                        assert(image.exists());
-                        RequestBody requestBody = new MultipartBody.Builder()
-                                .setType(MultipartBody.FORM)
-                                .addFormDataPart("images_file", "pic.jpg",
-                                        RequestBody.create(MediaType.parse("image/jpeg"), image))
-                                .addFormDataPart("owners", "me")
-                                .addFormDataPart("threshold", "0.7")
-                                .build();
-
-                        Request request = new Request.Builder()
-                                .url("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/5ab5e3e9-ded8-4e1f-bbec-c4b77517a849/image")
-                                .addHeader("Prediction-Key", "40dfbb9286d243b9b7af566c05631264")
-                                .addHeader("Content-Type", "application/octet-stream")
-                                .post(requestBody)
-                                .build();
-
-
-                        Response response = null;
-                        try {
-                            Call call = client.newCall(request);
-                            response =   call.execute();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        imageCount++;
-                        if (response == null) {
-                            Log.e(LOG_TAG, "Unable to upload to server. (null)");
-                        } else if(!response.isSuccessful()) {
-                            Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
-                        } else {
-                            Log.e(LOG_TAG, "Upload was successful.");
-                            try {
-                                JSONObject reader = new JSONObject(response.body().string());
-                                Log.e(LOG_TAG, reader.toString());
-
-                                JSON_to_CoffeeType(reader);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-                background.start();
+                takePicture();
             }
         });
 
@@ -383,6 +328,61 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void sendToRecon(byte[] image) {
+        final byte[] fImage = image;
+        Thread background = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                OkHttpClient client = new OkHttpClient();
+
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("images_file", "pic.jpg",
+                                RequestBody.create(MediaType.parse("image/jpeg"), fImage))
+                        .addFormDataPart("owners", "me")
+                        .addFormDataPart("threshold", "0.7")
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/5ab5e3e9-ded8-4e1f-bbec-c4b77517a849/image")
+                        .addHeader("Prediction-Key", "40dfbb9286d243b9b7af566c05631264")
+                        .addHeader("Content-Type", "application/octet-stream")
+                        .post(requestBody)
+                        .build();
+
+
+                Response response = null;
+                try {
+                    Call call = client.newCall(request);
+                    response =   call.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                imageCount++;
+                if (response == null) {
+                    Log.e(LOG_TAG, "Unable to upload to server. (null)");
+                } else if(!response.isSuccessful()) {
+                    Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
+                } else {
+                    Log.e(LOG_TAG, "Upload was successful.");
+                    try {
+                        JSONObject reader = new JSONObject(response.body().string());
+                        Log.e(LOG_TAG, reader.toString());
+
+                        JSON_to_CoffeeType(reader);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        background.start();
+    }
     protected void takePicture() {
         if(null == cameraDevice) {
             Log.e(LOG_TAG, "cameraDevice is null");
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            fileName = Environment.getExternalStorageDirectory()+"/pic" + imageCount + ".jpg";
+            fileName = Environment.getExternalStorageDirectory() + "/pic" + imageCount + ".jpg";
             final File file = new File(fileName);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -419,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
+                        sendToRecon(bytes);
                         save(bytes);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
