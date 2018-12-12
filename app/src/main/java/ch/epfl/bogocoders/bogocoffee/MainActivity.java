@@ -23,46 +23,28 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -78,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int PERMISSION_ALL = 1;
     private static String mFileName = null;
-
-    private static String photo_filename = null;
 
     private Button mRecordButton = null;
     private MediaRecorder mRecorder = null;
@@ -97,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
+    private int imageCount = 0;
+    private String fileName = null;
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -259,7 +241,8 @@ public class MainActivity extends AppCompatActivity {
 
                         OkHttpClient client = new OkHttpClient();
 
-                        File image = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+                        File image = new File(fileName);
+                        Log.e(LOG_TAG, "size"+image.getTotalSpace());
                         assert(image.exists());
                         RequestBody requestBody = new MultipartBody.Builder()
                                 .setType(MultipartBody.FORM)
@@ -285,14 +268,11 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-//                        Looper.prepare();
-
+                        imageCount++;
                         if (response == null) {
                             Log.e(LOG_TAG, "Unable to upload to server. (null)");
-//                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else if(!response.isSuccessful()) {
                             Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
-//                            Toast.makeText(MainActivity.this, "Unable to upload to server.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e(LOG_TAG, "Upload was successful.");
                             try {
@@ -416,14 +396,10 @@ public class MainActivity extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 176; // 640
-            int height = 144; // 480
-//            if (jpegSizes != null && 0 < jpegSizes.length) {
-//                width = jpegSizes[0].getWidth();
-//                height = jpegSizes[0].getHeight();
-//            }
+            int width = 640;
+            int height = 480;
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
-            List<Surface> outputSurfaces = new ArrayList<Surface>(2);
+            List<Surface> outputSurfaces = new ArrayList<>(2);
             outputSurfaces.add(reader.getSurface());
             outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
@@ -432,7 +408,8 @@ public class MainActivity extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+            fileName = Environment.getExternalStorageDirectory()+"/pic" + imageCount + ".jpg";
+            final File file = new File(fileName);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -460,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
                         output.write(bytes);
                     } finally {
                         if (null != output) {
+                            Log.e(LOG_TAG, "close file");
                             output.close();
                         }
                     }
