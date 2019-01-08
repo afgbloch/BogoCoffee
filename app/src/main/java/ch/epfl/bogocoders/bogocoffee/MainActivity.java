@@ -28,11 +28,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
-import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
+        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) { }
     };
 
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
