@@ -34,6 +34,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SoundAnalyser soundAnalyser = null;
 
-    private Button mAnalyseButton = null;
+    private ToggleButton mAnalyseButton = null;
 
     private TextureView textureView = null;
+
+    private ToggleButton mAutoButton = null;
 
     private Button mStatButton = null;
     private Button mSendButton = null;
@@ -120,20 +124,29 @@ public class MainActivity extends AppCompatActivity {
         mAnalyseButton     = findViewById(R.id.analyse);
         mSendButton        = findViewById(R.id.send);
         mStatButton        = findViewById(R.id.stats);
+        mAutoButton        = findViewById(R.id.auto);
         textureView        = findViewById(R.id.preview);
 
-        mAnalyseButton.setOnClickListener(new View.OnClickListener() {
-            boolean mStartAnalysing = true;
-
-            @Override
-            public void onClick(View v) {
-                onAnalyse(mStartAnalysing);
-                if (mStartAnalysing) {
-                    mAnalyseButton.setText("Stop analysing");
+        mAutoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mSendButton.setClickable(false);
+                    mSendButton.setEnabled(false);
+                    mAnalyseButton.setClickable(false);
+                    mAnalyseButton.setEnabled(false);
+                    mAnalyseButton.setChecked(false);
                 } else {
-                    mAnalyseButton.setText("Start analysing");
+                    mSendButton.setClickable(true);
+                    mSendButton.setEnabled(true);
+                    mAnalyseButton.setClickable(true);
+                    mAnalyseButton.setEnabled(true);
                 }
-                mStartAnalysing = !mStartAnalysing;
+            }
+        });
+
+        mAnalyseButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onAnalyse(isChecked);
             }
         });
 
