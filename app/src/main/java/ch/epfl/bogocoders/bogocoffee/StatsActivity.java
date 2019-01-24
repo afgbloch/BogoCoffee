@@ -13,8 +13,8 @@ import java.util.List;
 public class StatsActivity extends ListActivity {
 
     public static String COFFEE_TYPE[] = {
-            "ExpressoForte",
-            "ExpressoDecaffeinato",
+            "EspressoForte",
+            "EspressoDecaffeinato",
             "LungoForte",
             "Ristretto",
             "LungoDecaffeinato",
