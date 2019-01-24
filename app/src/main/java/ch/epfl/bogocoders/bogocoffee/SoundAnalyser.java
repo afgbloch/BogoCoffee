@@ -102,7 +102,7 @@ public class SoundAnalyser {
 
     public void stop() {
         if(running) {
-            Log.e(LOG_TAG, "Start sound analyser");
+            Log.e(LOG_TAG, "Stop sound analyser");
             dispatcher.stop();
             running = false;
         }
