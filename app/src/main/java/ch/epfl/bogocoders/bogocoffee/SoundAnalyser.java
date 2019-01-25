@@ -20,13 +20,16 @@ public class SoundAnalyser {
 
     private AudioDispatcher dispatcher = null;
 
+    public enum CoffeeType {Unknown, Ristretto, Espresso, Lungo};
+    private CoffeeType detected = CoffeeType.Unknown;
+
     public SoundAnalyser(Activity parent) {
         this.parent = parent;
     }
 
     private AudioDispatcher dispatcherFactory () {
 
-        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+        final AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
 
 //        dispatcher.addAudioProcessor(new BandPass(50, 50, 22050));
 //        dispatcher.addAudioProcessor(new LowPassFS(100, 22050));
@@ -67,24 +70,42 @@ public class SoundAnalyser {
         dispatcher.addAudioProcessor (
                 new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, 22050, 1024,
                         new PitchDetectionHandler() {
-                            double time = System.currentTimeMillis();
+                            double timeLapsed = System.currentTimeMillis();
+                            double timeStart = -1;
                             @Override
                             public void handlePitch(PitchDetectionResult pitchDetectionResult,
                                                     AudioEvent audioEvent) {
                                 final float pitchInHz = pitchDetectionResult.getPitch();
-                                if (System.currentTimeMillis() - time > 500) {
+                                if (System.currentTimeMillis() - timeLapsed > 500) {
                                     Log.e(LOG_TAG, "Pitch : " + pitchInHz);
-                                    time = System.currentTimeMillis();
-                                    parent.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (49 < pitchInHz && pitchInHz <= 51) {
-                                                Toast.makeText(parent, "cafe", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                Toast.makeText(parent, "pas cafe", Toast.LENGTH_SHORT).show();
+                                    timeLapsed = System.currentTimeMillis();
+//                                    parent.runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            if (49 < pitchInHz && pitchInHz <= 51) {
+//                                                Toast.makeText(parent, "cafe", Toast.LENGTH_SHORT).show();
+//                                            } else {
+//                                                Toast.makeText(parent, "pas cafe", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//                                    });
+                                    if (49 < pitchInHz && pitchInHz <= 51) {
+                                        timeStart = (timeStart == -1)? System.currentTimeMillis() : timeStart;
+                                    } else {
+                                        detected = CoffeeType.Unknown;
+                                        if (timeStart != -1) {
+                                            double time = (System.currentTimeMillis() - timeStart)/1000;
+                                            if( 3 < time && time < 5) {
+                                                detected = CoffeeType.Ristretto;
+                                            } else if( 8 < time && time < 12 ) {
+                                                detected = CoffeeType.Espresso;
+                                            } else if( 15 < time && time < 20 ) {
+                                                detected = CoffeeType.Lungo;
                                             }
+                                            dispatcher.stop();
+                                            running = false;
                                         }
-                                    });
+                                    }
                                 }
                             }
                         }));
@@ -106,5 +127,9 @@ public class SoundAnalyser {
             dispatcher.stop();
             running = false;
         }
+    }
+
+    public CoffeeType getDetected() {
+        return detected;
     }
 }
