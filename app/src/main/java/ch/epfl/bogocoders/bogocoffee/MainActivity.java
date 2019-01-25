@@ -85,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mLight;
 
+    private String detected = "Unknown";
+
+    private boolean lightOn = false;
+
     // Requesting permission to RECORD_AUDIO
     private String [] permissions = {
             Manifest.permission.RECORD_AUDIO,
@@ -98,6 +102,32 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 finish();
             }
+        }
+    }
+
+    private void startAuto() {
+        try {
+            while (mAutoButton.isChecked()) {
+                while (detected.equals("Unknown")) {
+                    while (!lightOn) {
+                        Log.e(LOG_TAG, "lights off");
+                        Thread.sleep(1000);
+                    }
+                    takePicture();
+                    Thread.sleep(1000);
+                }
+
+                onAnalyse(true);
+                SoundAnalyser.CoffeeType ctype = soundAnalyser.getDetected();
+                while (ctype == SoundAnalyser.CoffeeType.Unknown) {
+                    ctype = soundAnalyser.getDetected();
+                    Thread.sleep(100);
+                }
+                Log.e(LOG_TAG, "Coffee detected is a " + detected + "with a " + ctype +" type");
+                detected = "Unknown";
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -135,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
                     mAnalyseButton.setClickable(false);
                     mAnalyseButton.setEnabled(false);
                     mAnalyseButton.setChecked(false);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startAuto();
+                        }
+                    }).start();
                 } else {
                     mSendButton.setClickable(true);
                     mSendButton.setEnabled(true);
@@ -173,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
 //                Log.e(LOG_TAG, "Light :" + event.values[0]);
+                lightOn = event.values[0] > 100;
             }
 
             @Override
@@ -439,6 +476,7 @@ public class MainActivity extends AppCompatActivity {
         editor = mSharedPref.edit();
         editor.putInt(classe, mSharedPref.getInt(classe,0) + 1);
         editor.apply();
+        detected = classe;
     }
 }
 
