@@ -128,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+            if (!mAutoButton.isChecked()) {
+                onAnalyse(false);
+                detected = "Unknown";
+            }
         }
     }
 
@@ -158,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         textureView        = findViewById(R.id.preview);
 
         mAutoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            Thread thread = null;
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mSendButton.setClickable(false);
@@ -165,13 +170,15 @@ public class MainActivity extends AppCompatActivity {
                     mAnalyseButton.setClickable(false);
                     mAnalyseButton.setEnabled(false);
                     mAnalyseButton.setChecked(false);
-                    new Thread(new Runnable() {
+                    thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             startAuto();
                         }
-                    }).start();
+                    });
+                    thread.start();
                 } else {
+                    thread.interrupt();
                     mSendButton.setClickable(true);
                     mSendButton.setEnabled(true);
                     mAnalyseButton.setClickable(true);
