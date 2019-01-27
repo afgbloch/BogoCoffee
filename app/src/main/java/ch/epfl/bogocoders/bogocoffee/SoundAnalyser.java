@@ -66,7 +66,7 @@ public class SoundAnalyser {
 //
 //            }
 //        });
-
+        detected = CoffeeType.Unknown;
         dispatcher.addAudioProcessor (
                 new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, 22050, 1024,
                         new PitchDetectionHandler() {
@@ -92,14 +92,13 @@ public class SoundAnalyser {
                                     if (49 < pitchInHz && pitchInHz <= 51) {
                                         timeStart = (timeStart == -1)? System.currentTimeMillis() : timeStart;
                                     } else {
-                                        detected = CoffeeType.Unknown;
                                         if (timeStart != -1) {
                                             double time = (System.currentTimeMillis() - timeStart)/1000;
-                                            if( 3 < time && time < 5) {
+                                            if( 10 < time && time < 12) {
                                                 detected = CoffeeType.Ristretto;
-                                            } else if( 8 < time && time < 12 ) {
+                                            } else if( 14 < time && time < 16 ) {
                                                 detected = CoffeeType.Espresso;
-                                            } else if( 15 < time && time < 20 ) {
+                                            } else if( 33 < time && time < 35 ) {
                                                 detected = CoffeeType.Lungo;
                                             }
                                             dispatcher.stop();
