@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">BogoCoffee</string>
+    <string name="app_name">IOTCoffee</string>
     <string name="preference_file_key">MyStats</string>
 </resources>
