@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         Log.e(LOG_TAG, "onCreate");
 
         mPowerBi = new PowerBi(this);
-        mPowerBi.connectToPowerBi();
+//        mPowerBi.initDataset();
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
 
@@ -319,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
                         .addHeader("Content-Type", "application/octet-stream")
                         .post(requestBody)
                         .build();
-
 
                 Response response = null;
                 try {
