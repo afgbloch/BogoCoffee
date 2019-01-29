@@ -40,6 +40,9 @@ public class PowerBi {
     private static final String url_capsule = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Capsule/rows";
     private static final String url_tank = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Tank/rows";
     private static final String url_container = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Container/rows";
+    private static final String url_delete_capsule = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Capsule/rows";
+    private static final String url_delete_tank = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Tank/rows";
+    private static final String url_delete_container = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Container/rows";
 
     private static final String json_capsule_pattern = "{\"rows\": [{\"CoffeeType\": \"%s\", \"Quantity\":%d}]}";
     private static final String json_capsule = "{\"rows\": [{\"CoffeeType\": \"%s\", \"Quantity\": 1}]}";
@@ -107,14 +110,14 @@ public class PowerBi {
                 String jtank = String.format(Locale.FRANCE, json_tank_pattern, 200);
                 String jcapsule = String.format(Locale.FRANCE, json_capsule_pattern, "EspressoForte", 2);
 
-                sendToPowerBi(jcontainer, url_container);
-                sendToPowerBi(jtank, url_tank);
-                sendToPowerBi(jcapsule,url_capsule);
+                postPowerBi(jcontainer, url_container);
+                postPowerBi(jtank, url_tank);
+                postPowerBi(jcapsule,url_capsule);
             }
         }).start();
     }
 
-    private boolean sendToPowerBi(String payload, String url) {
+    private boolean postPowerBi(String payload, String url) {
         boolean status = false;
         OkHttpClient client = new OkHttpClient();
 
@@ -126,6 +129,40 @@ public class PowerBi {
                 .addHeader("Authorization", "Bearer " + mAuthResult.getAccessToken())
                 .addHeader("Content-Type", "application/json")
                 .post(requestBody)
+                .build();
+
+        Response response = null;
+        try {
+            Call call = client.newCall(request);
+            response = call.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (response == null) {
+            Log.e(LOG_TAG, "Unable to upload to server. (null)");
+        } else if(!response.isSuccessful()) {
+            Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
+        } else {
+            Log.e(LOG_TAG, "Upload was successful.");
+            status = true;
+        }
+
+        return status;
+    }
+
+    private boolean deletePowerBi(String url) {
+        boolean status = false;
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"), "");
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + mAuthResult.getAccessToken())
+                .addHeader("Content-Type", "application/json")
+                .delete(requestBody)
                 .build();
 
         Response response = null;
@@ -172,9 +209,28 @@ public class PowerBi {
                 String jcapsule = String.format(Locale.FRANCE, json_capsule, coffeetype);
                 String jtank = coffeeType2Json(coffeeSize);
 
-                sendToPowerBi(json_container, url_container);
-                sendToPowerBi(jtank, url_tank);
-                sendToPowerBi(jcapsule,url_capsule);
+                postPowerBi(json_container, url_container);
+                postPowerBi(jtank, url_tank);
+                postPowerBi(jcapsule,url_capsule);
+            }
+        }).start();
+    }
+
+    public void servicing() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // clears
+                deletePowerBi(url_delete_container);
+                deletePowerBi(url_delete_tank);
+                deletePowerBi(url_delete_capsule);
+
+                // servicing
+                postPowerBi(String.format(Locale.FRANCE, json_tank_pattern, 2000), url_tank);
+                postPowerBi(String.format(Locale.FRANCE, json_container_pattern, 0), url_container);
+                postPowerBi(String.format(Locale.FRANCE, json_capsule_pattern, "RistrettoIntenso", 50), url_capsule);
+                postPowerBi(String.format(Locale.FRANCE, json_capsule_pattern, "EspressoDecaffeinato", 50), url_capsule);
+                postPowerBi(String.format(Locale.FRANCE, json_capsule_pattern, "EspressoForte", 50), url_capsule);
             }
         }).start();
     }

@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ToggleButton mAutoButton = null;
 
+    private Button mServicingButton = null;
     private Button mStatButton = null;
     private Button mSendButton = null;
     private SharedPreferences mSharedPref = null;
@@ -125,10 +126,14 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(100);
                 }
                 Log.e(LOG_TAG, "Coffee detected is a " + detected + "with a " + ctype +" type");
+                mPowerBi.updateSatus(detected, ctype);
                 detected = "Unknown";
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
             if (!mAutoButton.isChecked()) {
                 onAnalyse(false);
                 detected = "Unknown";
@@ -153,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         Log.e(LOG_TAG, "onCreate");
 
         mPowerBi = new PowerBi(this);
+        mPowerBi.connectToPowerBi();
 //        mPowerBi.initDataset();
 
         ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
@@ -163,7 +169,15 @@ public class MainActivity extends AppCompatActivity {
         mSendButton        = findViewById(R.id.send);
         mStatButton        = findViewById(R.id.stats);
         mAutoButton        = findViewById(R.id.auto);
+        mServicingButton   = findViewById(R.id.servicing);
         textureView        = findViewById(R.id.preview);
+
+        mServicingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPowerBi.servicing();
+            }
+        });
 
         mAutoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             Thread thread = null;
