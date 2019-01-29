@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     ctype = soundAnalyser.getDetected();
                     Thread.sleep(100);
                 }
-                Log.e(LOG_TAG, "Coffee detected is a " + detected + "with a " + ctype +" type");
+                Log.e(LOG_TAG, "Coffee detected is a " + detected + " with a " + ctype +" type");
                 mPowerBi.updateSatus(detected, ctype);
                 detected = "Unknown";
             }
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
 //                Log.e(LOG_TAG, "Light :" + event.values[0]);
-                lightOn = event.values[0] > 100;
+                lightOn = event.values[0] > 80;
             }
 
             @Override

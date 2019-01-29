@@ -45,7 +45,7 @@ public class PowerBi {
     private static final String url_delete_container = "https://api.powerbi.com/v1.0/myorg/groups/f465833c-2d2c-40a0-ab99-955c04908d50/datasets/d4753956-95e1-4f84-9869-56a91917c228/tables/Container/rows";
 
     private static final String json_capsule_pattern = "{\"rows\": [{\"CoffeeType\": \"%s\", \"Quantity\":%d}]}";
-    private static final String json_capsule = "{\"rows\": [{\"CoffeeType\": \"%s\", \"Quantity\": 1}]}";
+    private static final String json_capsule = "{\"rows\": [{\"CoffeeType\": \"%s\", \"Quantity\": -1}]}";
     private static final String json_tank_pattern = "{\"rows\": [{\"ml\": %d}]}";
     private static final String json_tank_ristretto = "{\"rows\": [{\"ml\": -25}]}";
     private static final String json_tank_espresso = "{\"rows\": [{\"ml\": -40}]}";
@@ -144,7 +144,7 @@ public class PowerBi {
         } else if(!response.isSuccessful()) {
             Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
         } else {
-            Log.e(LOG_TAG, "Upload was successful.");
+            Log.e(LOG_TAG, "Upload was successful : " + payload + " " + url);
             status = true;
         }
 
@@ -178,7 +178,7 @@ public class PowerBi {
         } else if(!response.isSuccessful()) {
             Log.e(LOG_TAG, "Unable to upload to server. (not Successful)");
         } else {
-            Log.e(LOG_TAG, "Upload was successful.");
+            Log.e(LOG_TAG, "Upload was successful : ");
             status = true;
         }
 
